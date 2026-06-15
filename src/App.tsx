@@ -100,7 +100,33 @@ export default function App() {
   });
 
   // Filter/Search states
-  const [currentTab, setCurrentTab] = useState<'catalog' | 'admin'>('catalog');
+  const [currentTab, setCurrentTab] = useState<'catalog' | 'admin'>(() => {
+    if (typeof window !== 'undefined') {
+      return window.location.pathname === '/admin' ? 'admin' : 'catalog';
+    }
+    return 'catalog';
+  });
+
+  // Keep path and tab synchronized when clicking back/forward buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      if (typeof window !== 'undefined') {
+        setCurrentTab(window.location.pathname === '/admin' ? 'admin' : 'catalog');
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const handleSetTab = (tab: 'catalog' | 'admin') => {
+    setCurrentTab(tab);
+    if (typeof window !== 'undefined') {
+      const path = tab === 'admin' ? '/admin' : '/';
+      if (window.location.pathname !== path) {
+        window.history.pushState({ tab }, '', path);
+      }
+    }
+  };
   const [activeCategory, setActiveCategory] = useState<string>('Tudo');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'votes' | 'priceAsc' | 'priceDesc'>('votes');
@@ -447,7 +473,7 @@ export default function App() {
           {/* Call-to-action Button */}
           <div className="flex items-center gap-2.5">
             <button
-              onClick={() => setCurrentTab(currentTab === 'catalog' ? 'admin' : 'catalog')}
+              onClick={() => handleSetTab(currentTab === 'catalog' ? 'admin' : 'catalog')}
               className={`font-geist font-bold text-[11px] tracking-wider uppercase px-4 py-2.5 rounded transition-all duration-150 flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95 border ${
                 currentTab === 'admin'
                   ? 'bg-rose-50 border-rose-200 text-rose-700 hover:bg-rose-100'
@@ -495,7 +521,7 @@ export default function App() {
               </div>
 
               <button
-                onClick={() => { setCurrentTab('catalog'); }}
+                onClick={() => { handleSetTab('catalog'); }}
                 className="bg-neutral-900 hover:bg-black text-white px-5 py-2.5 rounded text-xs font-bold tracking-wide transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
               >
                 <span>Voltar ao Catálogo</span>
