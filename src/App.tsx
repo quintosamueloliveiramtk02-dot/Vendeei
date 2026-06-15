@@ -409,28 +409,6 @@ export default function App() {
   return (
     <div className="min-h-screen bg-neutral-50 flex flex-col font-sans select-none antialiased selection:bg-neutral-900 selection:text-white">
       
-      {/* Dynamic API Status Info Banner */}
-      <div className="bg-neutral-900 text-neutral-300 text-[11px] font-mono py-2 px-4 shadow-sm">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
-          <div className="flex items-center gap-2">
-            <span className={`inline-block w-2 h-2 rounded-full ${isSupabaseConfigured ? 'bg-emerald-500 animate-pulse' : 'bg-neutral-500'}`}></span>
-            <span>
-              STATUS: {isSupabaseConfigured ? 'SUPABASE CONECTADO' : 'CLIENT-SIDE SANDBOX LOCAL'}
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="opacity-75">v14.2 (Next.js/React Router Optimized)</span>
-            <button 
-              onClick={() => setIsDevGuideOpen(true)}
-              className="bg-white/10 hover:bg-white/20 text-white font-semibold px-2.5 py-0.5 rounded transition-all duration-150 cursor-pointer flex items-center gap-1"
-            >
-              <FileCode className="w-3 h-3 text-amber-400" />
-              <span>Ver Guia da Arquitetura</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
       {/* Styled Brand Header */}
       <header className="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-neutral-200">
         <nav id="header-navbar" className="max-w-6xl mx-auto h-16 px-4 md:px-6 flex justify-between items-center">
