@@ -102,28 +102,51 @@ export default function App() {
   // Filter/Search states
   const [currentTab, setCurrentTab] = useState<'catalog' | 'admin'>(() => {
     if (typeof window !== 'undefined') {
-      return window.location.pathname === '/admin' ? 'admin' : 'catalog';
+      const hash = window.location.hash;
+      const search = window.location.search;
+      const path = window.location.pathname;
+      if (hash === '#admin' || hash === '#/admin' || search.includes('tab=admin') || search.includes('page=admin') || path === '/admin') {
+        return 'admin';
+      }
     }
     return 'catalog';
   });
 
-  // Keep path and tab synchronized when clicking back/forward buttons
+  // Keep path/hash and tab synchronized when clicking back/forward buttons
   useEffect(() => {
     const handlePopState = () => {
       if (typeof window !== 'undefined') {
-        setCurrentTab(window.location.pathname === '/admin' ? 'admin' : 'catalog');
+        const hash = window.location.hash;
+        const search = window.location.search;
+        const path = window.location.pathname;
+        if (hash === '#admin' || hash === '#/admin' || search.includes('tab=admin') || search.includes('page=admin') || path === '/admin') {
+          setCurrentTab('admin');
+        } else {
+          setCurrentTab('catalog');
+        }
       }
     };
     window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+    window.addEventListener('hashchange', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('hashchange', handlePopState);
+    };
   }, []);
 
   const handleSetTab = (tab: 'catalog' | 'admin') => {
     setCurrentTab(tab);
     if (typeof window !== 'undefined') {
-      const path = tab === 'admin' ? '/admin' : '/';
-      if (window.location.pathname !== path) {
-        window.history.pushState({ tab }, '', path);
+      if (tab === 'admin') {
+        window.location.hash = 'admin';
+      } else {
+        if (window.location.pathname === '/admin') {
+          window.history.pushState({ tab }, '', '/');
+        } else {
+          window.location.hash = '';
+          // Clean up the hash symbol from URL bar
+          window.history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
       }
     }
   };
