@@ -1,0 +1,6 @@
+{
+  "name": "Vendei",
+  "description": "Plataforma minimalista curadora de produtos e ofertas de afiliados, inspirada no Product Hunt com alta taxa de conversão.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
